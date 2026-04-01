@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   PROJECT_ID: project-8bf7325f-4fa0-465b-953
@@ -21,18 +22,18 @@ jobs:
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          workload_identity_provider: projects/280526023872/locations/global/workloadIdentityPools/github-pool/providers/github-provider
           service_account: github-actions-sa@project-8bf7325f-4fa0-465b-953.iam.gserviceaccount.com
 
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v1
 
       - name: Configure Docker
-        run: gcloud auth configure-docker
+        run: gcloud auth configure-docker gcr.io
 
       - name: Build and Push Image
         run: |
-          gcloud builds submit --tag gcr.io/$PROJECT_ID/ml-api
+          gcloud builds submit --tag gcr.io/$PROJECT_ID/ml-api .
 
       - name: Deploy to Cloud Run
         run: |
